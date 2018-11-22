@@ -1,5 +1,33 @@
 {% extends 'base.html' %}
 
+
+{% block head %}
+
+    <script type="text/javascript">
+        $(function () {
+            $('.info_submit').click(function () {
+                $.post('/user/site2/',
+                    {
+                        shou: $('#shou').val(),
+                        site: $('#site').val(),
+                        email: $('#email').val(),
+                        phone: $('#phone').val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    function (data, status) {
+                        console.log('数据' + data + "\n状态" + status)
+                        $('#address').html(data.uaddress);
+                        $('#shou').val(data.ushou);
+                        $('#site').val(data.uaddress);
+                        $('#email').val(data.uemail);
+                        $('#phone').val(data.uphone);
+                    });
+            });
+        });
+    </script>
+
+{% endblock head %}
+
 {% block content %}
     <div class="main_con clearfix">
         <div class="left_menu_con clearfix">
@@ -15,31 +43,34 @@
             <div class="site_con">
                 <dl>
                     <dt>当前地址：</dt>
-                    <dd>{{ user.uaddress }}</dd>
+                    <dd id="address">{{ user.uaddress }}</dd>
                 </dl>
             </div>
             <h3 class="common_title2">编辑地址</h3>
             <div class="site_con">
-                <form action="/user/site/" method="post">
+                <form action="/user/site" method="post">
                     {% csrf_token %}
                     <div class="form_group">
                         <label>收件人：</label>
-                        <input type="text" name="shou" value="{{ user.ushou }}">
+                        <input type="text" id="shou" name="shou" value="{{ user.ushou }}">
                     </div>
                     <div class="form_group form_group2">
                         <label>详细地址：</label>
-                        <textarea class="site_area" name="site">{{ user.uaddress }}</textarea>
+                        <textarea class="site_area" id="site" name="site">{{ user.uaddress }}</textarea>
                     </div>
                     <div class="form_group">
                         <label>邮编：</label>
-                        <input type="text" name="email" value="{{ user.uemail }}">
+                        <input type="text" id="email" name="email" value="{{ user.uemail }}">
                     </div>
                     <div class="form_group">
                         <label>手机：</label>
-                        <input type="text" name="phone" value="{{ user.uphone }}">
+                        <input type="text" id="phone" name="phone" value="{{ user.uphone }}">
                     </div>
 
-                    <input type="submit" name="" value="提交" class="info_submit">
+{#                    <input type="submit" value="提交" class="info_submit">#}
+
+                    {# 使用jquery 方式进行提交 #}
+                    <input type="button" value="提交" class="info_submit">
                 </form>
             </div>
         </div>

@@ -2,7 +2,8 @@
 from django.shortcuts import render, redirect
 from .models import *
 from hashlib import sha1
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+import json
 
 
 # 注册
@@ -106,3 +107,19 @@ def site(request):
         user.save()
     context = {'title': '用户中心', 'user': user}
     return render(request, 'df_user/user_center_site.html', context)
+
+
+def site2(request):
+    user = UserInfo.objects.get(pk=request.session['user_id'])
+
+    # 在form提交时执行该处理
+    if request.method == 'POST':
+        post = request.POST
+        user.ushou = post.get('shou')
+        user.uaddress = post.get('site')
+        user.uemail = post.get('email')
+        user.uphone = post.get('phone')
+        user.save()
+    context = {'title': '用户中心', 'ushou': user.ushou, 'uaddress': user.uaddress, 'uemail': user.uemail, 'uphone': user.uphone}
+    print(json.dumps(context))
+    return JsonResponse(context)
