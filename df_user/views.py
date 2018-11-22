@@ -5,15 +5,10 @@ from hashlib import sha1
 from django.http import JsonResponse, HttpResponseRedirect
 
 
+# 注册
 def register(request):
-    context = {"title": "天天生鲜-注册"}
+    context = {"title": "注册"}
     return render(request, 'df_user/register.html', context)
-
-
-def login(request):
-    uname = request.COOKIES.get('uname', '')
-    context = {'title': '天天生鲜-登录', 'error_name': 0, 'error_pwd': 0, 'uname': uname}
-    return render(request, 'df_user/login.html', context)
 
 
 def register_handle(request):
@@ -47,6 +42,13 @@ def register_exist(request):
     return JsonResponse({'count': count})
 
 
+# 登录
+def login(request):
+    uname = request.COOKIES.get('uname', '')
+    context = {'title': '登录', 'error_name': 0, 'error_pwd': 0, 'uname': uname}
+    return render(request, 'df_user/login.html', context)
+
+
 def login_handle(request):
     post = request.POST
     uname = post.get('username')
@@ -67,13 +69,40 @@ def login_handle(request):
             request.session['user_name'] = uname
             return red
         else:
-            context = {'title': '天天生鲜-登录', 'error_name': 0, 'error_pwd': 1, 'uname': uname, 'upwd': pwd}
+            context = {'title': '登录', 'error_name': 0, 'error_pwd': 1, 'uname': uname, 'upwd': pwd}
             return render(request, 'df_user/login.html', context)
     else:
-        context = {'title': '天天生鲜-登录', 'error_name': 1, 'error_pwd': 0, 'uname': uname, 'upwd': pwd}
+        context = {'title': '登录', 'error_name': 1, 'error_pwd': 0, 'uname': uname, 'upwd': pwd}
         return render(request, 'df_user/login.html', context)
 
 
+# 个人信息
 def info(request):
-    context = {"title": "天天生鲜 - 用户中心"}
+    user = UserInfo.objects.get(pk=request.session['user_id'])
+    context = {"title": "用户中心",
+               'user_name': user.uname,
+               'user_email': user.uemail,
+               'user_address': user.uaddress}
     return render(request, 'df_user/user_center_info.html', context)
+
+
+# 全部订单
+def order(request):
+    context = {'title': '用户中心'}
+    return render(request, 'df_user/user_center_order.html', context)
+
+
+# 收货地址
+def site(request):
+    user = UserInfo.objects.get(pk=request.session['user_id'])
+
+    # 在form提交时执行该处理
+    if request.method == 'POST':
+        post = request.POST
+        user.ushou = post.get('shou')
+        user.uaddress = post.get('site')
+        user.uemail = post.get('email')
+        user.uphone = post.get('phone')
+        user.save()
+    context = {'title': '用户中心', 'user': user}
+    return render(request, 'df_user/user_center_site.html', context)
