@@ -83,13 +83,15 @@ def info(request):
     context = {"title": "用户中心",
                'user_name': user.uname,
                'user_email': user.uemail,
-               'user_address': user.uaddress}
+               'user_address': user.uaddress,
+               'page_name': 1}
     return render(request, 'df_user/user_center_info.html', context)
 
 
 # 全部订单
 def order(request):
-    context = {'title': '用户中心'}
+    context = {'title': '用户中心',
+               'page_name': 1}
     return render(request, 'df_user/user_center_order.html', context)
 
 
@@ -105,7 +107,7 @@ def site(request):
         user.uemail = post.get('email')
         user.uphone = post.get('phone')
         user.save()
-    context = {'title': '用户中心', 'user': user}
+    context = {'title': '用户中心', 'user': user, 'page_name': 1}
     return render(request, 'df_user/user_center_site.html', context)
 
 

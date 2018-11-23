@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 Django settings for dailyfresh project.
 
@@ -35,7 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tinymce',
     'df_user',
+    'df_goods',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +123,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+# 富文本编辑框默认配置，可被模板中使用覆盖
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400
+}
