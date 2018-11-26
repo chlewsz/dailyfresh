@@ -5,6 +5,7 @@ from hashlib import sha1
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 import json
 from . import user_decorator
+from df_goods.models import GoodsInfo
 
 
 # 注册
@@ -83,11 +84,21 @@ def login_handle(request):
 @user_decorator.login
 def info(request):
     user = UserInfo.objects.get(pk=request.session['user_id'])
+
+    goods_ids = request.COOKIES.get('goods_ids', '')
+    goods_ids_list = goods_ids.split(',')
+
+    goods_list = []
+
+    for goods_id in goods_ids_list:
+        goods_list.append(GoodsInfo.objects.get(id=int(goods_id)))
+
     context = {"title": "用户中心",
                'user_name': user.uname,
                'user_email': user.uemail,
                'user_address': user.uaddress,
-               'page_name': 1}
+               'page_name': 1,
+               'goods_list': goods_list}
     return render(request, 'df_user/user_center_info.html', context)
 
 
@@ -128,7 +139,8 @@ def site2(request):
         user.uemail = post.get('email')
         user.uphone = post.get('phone')
         user.save()
-    context = {'title': '用户中心', 'ushou': user.ushou, 'uaddress': user.uaddress, 'uemail': user.uemail, 'uphone': user.uphone}
+    context = {'title': '用户中心', 'ushou': user.ushou, 'uaddress': user.uaddress, 'uemail': user.uemail,
+               'uphone': user.uphone}
     print(json.dumps(context))
     return JsonResponse(context)
 
@@ -136,5 +148,5 @@ def site2(request):
 def logout(request):
     request.session.flush()
     red = HttpResponseRedirect('/')
-    red.cookies.clear()
+    red.delete_cookie('url')
     return red

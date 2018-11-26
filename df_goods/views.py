@@ -58,4 +58,22 @@ def detail(request, goods_id):
 
     news = goods.gtype.goodsinfo_set.order_by('-id')[0:2]
     context = {'title': '详情', 'guest_cart': 1, 'id': goods_id, 'goods': goods, 'news': news, 'typeinfo': goods.gtype}
-    return render(request, 'df_goods/detail.html', context)
+
+    response = render(request, 'df_goods/detail.html', context)
+
+    # 记录最近浏览信息，在用户中心使用
+    goods_ids = request.COOKIES.get("goods_ids", '')
+    new_goods_id = str(goods_id)
+    if goods_ids != '':
+        goods_ids1 = goods_ids.split(',')
+        if goods_ids1.count(new_goods_id) > 1:  # 商品已被记录，则删除
+            goods_ids1.remove(new_goods_id)
+        goods_ids1.insert(0, new_goods_id)
+        if len(goods_ids1) >= 6:
+            del goods_ids1[5]
+        goods_ids = ','.join(goods_ids1)
+    else:
+        goods_ids = goods_id
+    response.set_cookie('goods_ids', goods_ids)
+
+    return response
