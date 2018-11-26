@@ -18,12 +18,12 @@ html,body{height:100%}
 }
 
 .login_info{
-	display:none;
+	color:#666;
 }
 
 .login_info em{color:#ff8800}
 
-.login_btn a,.user_link a{
+.login_info a, .login_btn a,.user_link a{
 	color:#666;
 }
 

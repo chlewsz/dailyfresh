@@ -4,6 +4,7 @@ from .models import *
 from hashlib import sha1
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 import json
+from . import user_decorator
 
 
 # 注册
@@ -61,7 +62,8 @@ def login_handle(request):
         s1 = sha1()
         s1.update(bytes(pwd, encoding='utf-8'))
         if s1.hexdigest() == users[0].upwd:
-            red = HttpResponseRedirect('/user/info/')
+            url = request.COOKIES.get('url', '/')
+            red = HttpResponseRedirect(url)
             if jizhu != 0:
                 red.set_cookie('uname', uname)
             else:
@@ -78,6 +80,7 @@ def login_handle(request):
 
 
 # 个人信息
+@user_decorator.login
 def info(request):
     user = UserInfo.objects.get(pk=request.session['user_id'])
     context = {"title": "用户中心",
@@ -89,6 +92,7 @@ def info(request):
 
 
 # 全部订单
+@user_decorator.login
 def order(request):
     context = {'title': '用户中心',
                'page_name': 1}
@@ -96,6 +100,7 @@ def order(request):
 
 
 # 收货地址
+@user_decorator.login
 def site(request):
     user = UserInfo.objects.get(pk=request.session['user_id'])
 
@@ -111,6 +116,7 @@ def site(request):
     return render(request, 'df_user/user_center_site.html', context)
 
 
+@user_decorator.login
 def site2(request):
     user = UserInfo.objects.get(pk=request.session['user_id'])
 
@@ -125,3 +131,10 @@ def site2(request):
     context = {'title': '用户中心', 'ushou': user.ushou, 'uaddress': user.uaddress, 'uemail': user.uemail, 'uphone': user.uphone}
     print(json.dumps(context))
     return JsonResponse(context)
+
+
+def logout(request):
+    request.session.flush()
+    red = HttpResponseRedirect('/')
+    red.cookies.clear()
+    return red
