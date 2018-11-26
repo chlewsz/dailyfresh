@@ -38,6 +38,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='goodsinfo',
             name='gtype',
-            field=models.ForeignKey(on_delete=False, to='df_goods.TypeInfo'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='df_goods.TypeInfo'),
         ),
     ]

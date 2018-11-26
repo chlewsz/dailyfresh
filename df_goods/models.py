@@ -20,7 +20,7 @@ class GoodsInfo(models.Model):
     gintro = models.CharField(max_length=200)
     grepertory = models.IntegerField()
     gdetail = HTMLField()
-    gtype = models.ForeignKey(TypeInfo, on_delete=False)
+    gtype = models.ForeignKey(TypeInfo, on_delete=models.CASCADE)
     isDelete = models.BooleanField(default=False)
 
     def __str__(self):
