@@ -1,6 +1,18 @@
 {% extends 'base_foot.html' %}
 
+
 {% block body %}
+    <script type="text/javascript">
+    $(function () {
+       $('.input_btn').click(function () {
+           var newWeb = window.open('_blank');
+           newWeb.location = '/search/?q=' + $('.input_text').val();
+       });
+    });
+
+
+    </script>
+
     <div class="header_con">
         <div class="header">
             <div class="welcome fl">欢迎来到天天生鲜!</div>
