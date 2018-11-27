@@ -6,6 +6,8 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 import json
 from . import user_decorator
 from df_goods.models import GoodsInfo
+from df_order.models import *
+from django.core.paginator import Paginator
 
 
 # 注册
@@ -105,9 +107,20 @@ def info(request):
 
 # 全部订单
 @user_decorator.login
-def order(request):
+def order(request, pindex=1):
+    uid = request.session['user_id']
+
+    order_list = OrderInfo.objects.filter(user_id=uid)
+
+    paginator = Paginator(order_list, 2)
+    if pindex == '':
+        pindex = 1
+    page = paginator.get_page(int(pindex))
+
     context = {'title': '用户中心',
-               'page_name': 1}
+               'page_name': 1,
+               'page': page,
+               'paginator': paginator}
     return render(request, 'df_user/user_center_order.html', context)
 
 
