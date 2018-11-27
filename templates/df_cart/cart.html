@@ -81,6 +81,21 @@
 
                 total();
             });
+
+
+            $('#close_count').click(function () {
+                var url = '/order/?';
+
+                $(':checked').each(function () {
+                    if ($(this).attr('id') != 'check_all') {
+                        var cart_id = $(this).parents('.cart_list_td').attr('id');
+                        url = url + 'cart_id=' + cart_id + '&';
+                    }
+
+                });
+                url = url.substr(0, url.length - 1);
+                $(location).attr('href', url);
+            });
         });
 
 
@@ -124,7 +139,7 @@
         <li class="col01"><input id="check_all" type="checkbox" name="" checked=""></li>
         <li class="col02">全选</li>
         <li class="col03">合计(不含运费)：<span>¥</span><em id="total_cost"></em><br>共计<b id="total_count"></b>件商品</li>
-        <li class="col04"><a href="place_order.html">去结算</a></li>
+        <li class="col04"><a href="javascript:;" id="close_count">去结算</a></li>
     </ul>
 
 {% endblock content %}
