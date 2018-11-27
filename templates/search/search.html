@@ -26,7 +26,7 @@
             {% endif %}
 
             {% for pindex in paginator.page_range %}
-                {% if pindex == page.number %}
+                 {% if pindex == page.number %}
                     <a href="#" class="active">{{ pindex }}</a>
                 {% else %}
                     <a href="/search/?q={{ query }}&amp;page={{ pindex }}">{{ pindex }}</a>
